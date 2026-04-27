@@ -16,8 +16,9 @@
 
 package io.restassured.internal.http;
 
-import org.apache.hc.core5.http.protocol.BasicHttpContext;
+import org.apache.hc.core5.http.ProtocolVersion;
 import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.http.protocol.HttpCoreContext;
 
 /**
  * HttpContext stores many transient properties of an HTTP request.  
@@ -35,11 +36,11 @@ public class HttpContextDecorator implements HttpContext {
 	protected HttpContext delegate;
 	
 	public HttpContextDecorator() {
-		this.delegate = new BasicHttpContext();
+		this.delegate = new HttpCoreContext();
 	}
 	
 	public HttpContextDecorator( HttpContext delegate ) {
-		this.delegate = new BasicHttpContext(delegate);
+		this.delegate = new HttpCoreContext(delegate);
 	}
 	
 	/**
@@ -61,27 +62,37 @@ public class HttpContextDecorator implements HttpContext {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.apache.http.protocol.HttpContext#getAttribute(java.lang.String)
+	 * @see org.apache.hc.core5.http.protocol.HttpContext#getAttribute(java.lang.String)
 	 */
 	public Object getAttribute(String name) {
 		return this.delegate.getAttribute(name);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.apache.http.protocol.HttpContext#removeAttribute(java.lang.String)
+	 * @see org.apache.hc.core5.http.protocol.HttpContext#removeAttribute(java.lang.String)
 	 */
 	public Object removeAttribute(String name) {
 		return this.delegate.removeAttribute(name);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.apache.http.protocol.HttpContext#setAttribute(java.lang.String, java.lang.Object)
+	 * @see org.apache.hc.core5.http.protocol.HttpContext#setAttribute(java.lang.String, java.lang.Object)
 	 */
-	public void setAttribute(String name, Object val) {
-		this.delegate.setAttribute(name, val);
+	public Object setAttribute(String name, Object val) {
+		return this.delegate.setAttribute(name, val);
 	}
 
 	public HttpContext getDelegate() {
 		return delegate;
+	}
+
+	@Override
+	public ProtocolVersion getProtocolVersion() {
+		return delegate.getProtocolVersion();
+	}
+
+	@Override
+	public void setProtocolVersion(ProtocolVersion version) {
+		delegate.setProtocolVersion(version);
 	}
 }

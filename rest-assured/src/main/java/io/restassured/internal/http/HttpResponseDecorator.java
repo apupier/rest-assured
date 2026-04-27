@@ -19,7 +19,6 @@ package io.restassured.internal.http;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.message.StatusLine;
 import org.apache.hc.core5.http.Header;
-import org.apache.hc.core5.http.HeaderIterator;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.ProtocolVersion;
 /* No generic migration for classes in the `org.apache.http.params` package exists, please migrate manually */
@@ -72,15 +71,15 @@ public class HttpResponseDecorator implements ClassicHttpResponse {
 	 *   {@link Status#SUCCESS}
 	 */
 	public boolean isSuccess() {
-		return Status.find( getStatus() ) == Status.SUCCESS;
+		return Status.find( getCode() ) == Status.SUCCESS;
 	}
 	
 	/**
 	 * Get the response status code.
-	 * @see StatusLine#getStatusCode()
+	 * @see StatusLine#getCode()
 	 * @return the HTTP response code.
 	 */
-	public int getStatus() {
+	public int getCode() {
 		return responseBase.getCode();
 	}
 	
@@ -125,7 +124,7 @@ public class HttpResponseDecorator implements ClassicHttpResponse {
 	 * @author <a href='mailto:tomstrummer+httpbuilder@gmail.com'>Tom Nichols</a>
 	 * @since 0.5.0
 	 */
-	public final class HeadersDecorator implements Iterable<Object> {
+	public final class HeadersDecorator implements Iterable<Header> {
 		
 		/**
 		 * Access the named header value, using bracket form.  For example,
@@ -161,7 +160,7 @@ public class HttpResponseDecorator implements ClassicHttpResponse {
 		 * }</pre>
 		 */
 		@SuppressWarnings("unchecked")
-		public Iterator<Object> iterator() {
+		public Iterator<Header> iterator() {
 			return responseBase.headerIterator();
 		}
 	}
@@ -192,7 +191,7 @@ public class HttpResponseDecorator implements ClassicHttpResponse {
 	}
 
 	public void setStatusCode( int arg0 ) throws IllegalStateException {
-		responseBase.setStatusCode( arg0 );
+		responseBase.setCode( arg0 );
 	}
 
 	public void setStatusLine( StatusLine arg0 ) {
@@ -220,7 +219,7 @@ public class HttpResponseDecorator implements ClassicHttpResponse {
 	}
 
 	public Header[] getAllHeaders() {
-		return responseBase.getAllHeaders();
+		return responseBase.getHeaders();
 	}
 
 	public Header getFirstHeader( String arg0 ) {
@@ -240,23 +239,23 @@ public class HttpResponseDecorator implements ClassicHttpResponse {
 	}
 
 	public ProtocolVersion getProtocolVersion() {
-		return responseBase.getProtocolVersion();
+		return responseBase.getVersion();
 	}
 
-	public HeaderIterator headerIterator() {
+	public Iterator<Header> headerIterator() {
 		return responseBase.headerIterator();
 	}
 
-	public HeaderIterator headerIterator( String arg0 ) {
+	public Iterator<Header> headerIterator( String arg0 ) {
 		return responseBase.headerIterator( arg0 );
 	}
 
-	public void removeHeader( Header arg0 ) {
-		responseBase.removeHeader( arg0 );
+	public boolean removeHeader( Header arg0 ) {
+		return responseBase.removeHeader( arg0 );
 	}
 
-	public void removeHeaders( String arg0 ) {
-		responseBase.removeHeaders( arg0 );
+	public boolean removeHeaders( String arg0 ) {
+		return responseBase.removeHeaders( arg0 );
 	}
 
 	public void setHeader( Header arg0 ) {
