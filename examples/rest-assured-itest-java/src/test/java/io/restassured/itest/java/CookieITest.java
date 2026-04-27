@@ -22,7 +22,7 @@ import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
 import io.restassured.itest.java.support.WithJetty;
 import io.restassured.response.Response;
-import org.apache.http.client.utils.DateUtils;
+import org.apache.hc.client5.http.utils.DateUtils;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 

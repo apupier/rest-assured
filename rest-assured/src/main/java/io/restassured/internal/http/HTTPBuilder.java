@@ -24,20 +24,20 @@ import io.restassured.http.ContentType;
 import io.restassured.http.Method;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpEntityContainer;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.client5.http.ClientProtocolException;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPatch;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.protocol.ClientContext;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.client5.http.ClientConnectionManager;
+import org.apache.hc.client5.http.params.ConnRoutePNames;
+import org.apache.hc.client5.http.impl.classic.AbstractHttpClient;
+import org.apache.hc.core5.http.protocol.HttpContext;
 import org.codehaus.groovy.runtime.IOGroovyMethods;
 import org.codehaus.groovy.runtime.MethodClosure;
 
@@ -485,7 +485,7 @@ public abstract class HTTPBuilder {
      * which actually executes the request.
      */
     protected Object doRequest(URI uri, String method, Object contentType, boolean hasBody, Closure configClosure) throws IOException {
-        HttpRequestBase reqMethod = HttpRequestFactory.createHttpRequest(uri, method, hasBody);
+        HttpUriRequestBase reqMethod = HttpRequestFactory.createHttpRequest(uri, method, hasBody);
         RequestConfigDelegate delegate = new RequestConfigDelegate(reqMethod, contentType,
                 this.defaultRequestHeaders,
                 this.defaultResponseHandlers);
@@ -529,7 +529,7 @@ public abstract class HTTPBuilder {
     // the method :(.
     protected Object parseResponse(Object resp, Object contentType)
             throws IOException {
-        HttpResponse httpResponse = (HttpResponse) resp;
+        ClassicHttpResponse httpResponse = (ClassicHttpResponse) resp;
 
         // For HEAD or OPTIONS requests, there should be no response entity.
         if (httpResponse.getEntity() == null) {
@@ -804,7 +804,7 @@ public abstract class HTTPBuilder {
     public void setProxy(String host, int port, String scheme) {
         getClient().getParams().setParameter(
                 ConnRoutePNames.DEFAULT_PROXY,
-                new HttpHost(host, port, scheme));
+                new HttpHost(scheme, host, port));
     }
 
     /**
@@ -833,7 +833,7 @@ public abstract class HTTPBuilder {
      * </p>
      */
     protected class RequestConfigDelegate {
-        private HttpRequestBase request;
+        private HttpUriRequestBase request;
         private Object contentType;
         private String requestContentType;
         private boolean allowContentType;
@@ -842,7 +842,7 @@ public abstract class HTTPBuilder {
         private Map<Object, Object> headers = new StringHashMap<Object>();
         private HttpContextDecorator context = new HttpContextDecorator();
 
-        public RequestConfigDelegate(HttpRequestBase request, Object contentType,
+        public RequestConfigDelegate(HttpUriRequestBase request, Object contentType,
                                      Map<?, ?> defaultRequestHeaders,
                                      Map<?, Closure> defaultResponseHandlers) {
             if (request == null) throw new IllegalArgumentException(
@@ -853,11 +853,11 @@ public abstract class HTTPBuilder {
             if (defaultRequestContentType != null)
                 this.requestContentType = defaultRequestContentType.toString();
             this.responseHandlers.putAll(defaultResponseHandlers);
-            URI uri = request.getURI();
+            URI uri = request.getUri();
             if (uri != null) this.uri = new URIBuilder(uri, urlEncodingEnabled, encoderConfig);
         }
 
-        public RequestConfigDelegate(Map<String, ?> args, HttpRequestBase request, Closure successHandler)
+        public RequestConfigDelegate(Map<String, ?> args, HttpUriRequestBase request, Closure successHandler)
                 throws URISyntaxException {
             this(request, defaultContentType, defaultRequestHeaders, defaultResponseHandlers);
             if (successHandler != null)
@@ -914,9 +914,9 @@ public abstract class HTTPBuilder {
          * Directly access the Apache HttpClient instance that will
          * be used to execute this request.
          *
-         * @see HttpRequestBase
+         * @see HttpUriRequestBase
          */
-        public HttpRequestBase getRequest() {
+        public HttpUriRequestBase getRequest() {
             return this.request;
         }
 
@@ -1127,13 +1127,13 @@ public abstract class HTTPBuilder {
          * @see #send(Object, Object)
          */
         public void setBody(Object requestContentType, Object body) {
-            if (!(request instanceof HttpEntityEnclosingRequest))
+            if (!(request instanceof HttpEntityContainer))
                 throw new IllegalArgumentException(
                         "Cannot set a request body for a " + request.getMethod() + " method");
             Closure encoder = encoders.getAt(requestContentType);
             HttpEntity entity = (HttpEntity) encoder.call(requestContentType, body);
 
-            ((HttpEntityEnclosingRequest) this.request).setEntity(entity);
+            ((HttpEntityContainer) this.request).setEntity(entity);
         }
 
         /**

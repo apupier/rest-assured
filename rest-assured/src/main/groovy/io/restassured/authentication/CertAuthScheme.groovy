@@ -16,8 +16,8 @@
 package io.restassured.authentication
 
 import io.restassured.internal.http.HTTPBuilder
-import org.apache.http.conn.ssl.SSLSocketFactory
-import org.apache.http.conn.ssl.X509HostnameVerifier
+import org.apache.hc.core5.ssl.SSLSocketFactory
+import org.apache.hc.core5.ssl.X509HostnameVerifier
 
 import java.security.KeyStore
 

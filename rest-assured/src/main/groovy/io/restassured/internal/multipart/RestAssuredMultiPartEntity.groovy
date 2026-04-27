@@ -16,12 +16,12 @@
 
 package io.restassured.internal.multipart
 
-import org.apache.http.Header
-import org.apache.http.HttpEntity
-import org.apache.http.entity.mime.FormBodyPart
-import org.apache.http.entity.mime.HttpMultipartMode
-import org.apache.http.entity.mime.MultipartEntityBuilder
-import org.apache.http.entity.mime.content.ContentBody
+import org.apache.hc.client5.http.entity.mime.HttpMultipartMode
+import org.apache.hc.core5.http.Header
+import org.apache.hc.core5.http.HttpEntity
+import org.apache.hc.client5.http.entity.mime.FormBodyPart
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder
+import org.apache.hc.client5.http.entity.mime.ContentBody
 
 import java.nio.charset.Charset
 

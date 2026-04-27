@@ -16,12 +16,14 @@
 
 package io.restassured.config;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.params.CookiePolicy;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.config.CookieSpecs;
+import org.apache.hc.client5.http.cookie.StandardCookieSpec;
+import org.apache.hc.client5.http.entity.mime.HttpMultipartMode;
+import org.apache.hc.client5.http.params.ClientPNames;
 import org.apache.http.cookie.params.CookieSpecPNames;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,7 +42,7 @@ import static java.util.Arrays.asList;
  * <th>Parameter name</th><th>Parameter value</th><th>Description</th>
  * </tr>
  * <tr>
- * <td>{@link ClientPNames#COOKIE_POLICY}</td><td>{@link CookiePolicy#IGNORE_COOKIES}</td><td>Don't automatically set response cookies in subsequent requests.</td>
+ * <td>{@link ClientPNames#COOKIE_POLICY}</td><td>{@link CookieSpecs#IGNORE_COOKIES}</td><td>Don't automatically set response cookies in subsequent requests.</td>
  * </tr>
  * <tr>
  * <td>{@link CookieSpecPNames#DATE_PATTERNS}</td><td>[EEE, dd-MMM-yyyy HH:mm:ss z, EEE, dd MMM yyyy HH:mm:ss z]</td><td>Defines valid date patterns to be used for parsing non-standard
@@ -50,11 +52,11 @@ import static java.util.Arrays.asList;
  * </table>
  * <p>
  * You can also specify a http client factory that is used to create the http client instances that REST Assured uses ({@link #httpClientFactory(HttpClientConfig.HttpClientFactory)}).
- * By default the {@link DefaultHttpClient} is used. It's also possible to specify whether or not this instance should be reused in multiple requests. By default the http client instance is not reused.
+ * By default the {@link CloseableHttpClient} is used. It's also possible to specify whether or not this instance should be reused in multiple requests. By default the http client instance is not reused.
  * </p>
  *
- * @see org.apache.http.client.params.ClientPNames
- * @see org.apache.http.client.params.CookiePolicy
+ * @see org.apache.hc.client5.http.params.ClientPNames
+ * @see org.apache.hc.client5.http.config.CookieSpecs
  * @see org.apache.http.params.CoreProtocolPNames
  */
     public class HttpClientConfig implements Config {
@@ -70,7 +72,7 @@ import static java.util.Arrays.asList;
     private volatile HttpClient httpClient;
 
     /**
-     * Creates a new  HttpClientConfig instance with the <code>{@value org.apache.http.client.params.ClientPNames#COOKIE_POLICY}</code> parameter set to <code>{@value org.apache.http.client.params.CookiePolicy#IGNORE_COOKIES}</code>.
+     * Creates a new  HttpClientConfig instance with the <code>{@value org.apache.hc.client5.http.params.ClientPNames#COOKIE_POLICY}</code> parameter set to <code>{@value org.apache.hc.client5.http.config.CookieSpecs#IGNORE_COOKIES}</code>.
      */
     public HttpClientConfig() {
         this.httpClientFactory = defaultHttpClientFactory();
@@ -78,7 +80,7 @@ import static java.util.Arrays.asList;
 
         this.httpClientParams = new HashMap<String, Object>() {
             {
-                put(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
+                put(ClientPNames.COOKIE_POLICY, StandardCookieSpec.IGNORE);
                 put(CookieSpecPNames.DATE_PATTERNS, asList("EEE, dd-MMM-yyyy HH:mm:ss z", "EEE, dd MMM yyyy HH:mm:ss z"));
             }
         };
@@ -124,7 +126,7 @@ import static java.util.Arrays.asList;
 
     /**
      * Instruct REST Assured to reuse the configured http client instance for multiple requests. By default REST Assured
-     * will create a new {@link org.apache.http.client.HttpClient} instance for each request. Note that for this to work
+     * will create a new {@link org.apache.hc.client5.http.classic.HttpClient} instance for each request. Note that for this to work
      * the configuration must be defined statically, for example:
      * <p/>
      * <pre>
@@ -149,7 +151,7 @@ import static java.util.Arrays.asList;
     }
 
     /**
-     * If this method returns <code>true</code> then REST Assured will reuse the same {@link org.apache.http.client.HttpClient} instance created
+     * If this method returns <code>true</code> then REST Assured will reuse the same {@link org.apache.hc.client5.http.classic.HttpClient} instance created
      * by the {@link #httpClientInstance()} method for all requests. If <code>false</code> is returned then REST Assured creates a new instance for each request.
      * <p>
      * By default <code>false</code> is returned.
@@ -224,7 +226,7 @@ import static java.util.Arrays.asList;
     }
 
     /**
-     * @return The configured http client that will create an {@link org.apache.http.client.HttpClient} instances that's used by REST Assured when making a request.
+     * @return The configured http client that will create an {@link org.apache.hc.client5.http.classic.HttpClient} instances that's used by REST Assured when making a request.
      */
     public HttpClient httpClientInstance() {
         if (isConfiguredToReuseTheSameHttpClientInstance()) {
@@ -263,7 +265,7 @@ import static java.util.Arrays.asList;
     private static HttpClientFactory defaultHttpClientFactory() {
         return new HttpClientFactory() {
             public HttpClient createHttpClient() {
-                return new DefaultHttpClient();
+                return HttpClients.createDefault();
             }
         };
     }
@@ -278,9 +280,9 @@ import static java.util.Arrays.asList;
     public interface HttpClientFactory {
         /**
          * Create an instance of {@link HttpClient} that'll be used by REST Assured when making requests. By default
-         * REST Assured creates a {@link DefaultHttpClient}.
+         * REST Assured creates a {@link CloseableHttpClient}.
          * <p>
-         * <b>Important: Version 1.9.0 of REST Assured ONLY supports instances of {@link org.apache.http.impl.client.AbstractHttpClient}</b>. The API is
+         * <b>Important: Version 1.9.0 of REST Assured ONLY supports instances of {@link org.apache.hc.client5.http.impl.classic.AbstractHttpClient}</b>. The API is
          * how ever prepared for future upgrades.
          * </p>
          *

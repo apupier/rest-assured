@@ -16,16 +16,16 @@
 
 package io.restassured.internal.http;
 
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.core5.http.protocol.BasicHttpContext;
+import org.apache.hc.core5.http.protocol.HttpContext;
 
 /**
  * HttpContext stores many transient properties of an HTTP request.  
  * This class adds Groovy convenience methods.  For a list of many
  * common properties stored in the HttpContext, see:
  * <ul>
- * <li>{@link org.apache.http.protocol.ExecutionContext}</li>
- * <li>{@link org.apache.http.client.protocol.ClientContext}</li>
+ * <li>{@link org.apache.hc.core5.http.protocol.ExecutionContext}</li>
+ * <li>{@link org.apache.hc.client5.http.protocol.ClientContext}</li>
  * </ul>
  * 
  * @author tnichols

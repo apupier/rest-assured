@@ -16,8 +16,9 @@
 
 package io.restassured.config;
 
+import org.apache.hc.client5.http.config.CookieSpecs;
+import org.apache.hc.client5.http.cookie.StandardCookieSpec;
 import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.params.CookiePolicy;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class HttpClientConfigTest {
         final HttpClientConfig httpClientConfig = new HttpClientConfig();
 
         Map<String, Object> params = (Map<String, Object>) httpClientConfig.params();
-        assertThat(params).containsEntry(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
+        assertThat(params).containsEntry(ClientPNames.COOKIE_POLICY, StandardCookieSpec.IGNORE);
     }
 
     @Test
@@ -44,13 +45,13 @@ public class HttpClientConfigTest {
         final HttpClientConfig httpClientConfig = new HttpClientConfig()
                 .setParam(ClientPNames.MAX_REDIRECTS, CUSTOM_MAX_REDIRECTS)
                 .reuseHttpClientInstance()
-                .setParam(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
+                .setParam(ClientPNames.COOKIE_POLICY, CookieSpecs.BROWSER_COMPATIBILITY);
 
         Map<String, Object> params = (Map<String, Object>) httpClientConfig.params();
         assertThat(params)
                 .contains(
                         entry(ClientPNames.MAX_REDIRECTS, CUSTOM_MAX_REDIRECTS),
-                        entry(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY)
+                        entry(ClientPNames.COOKIE_POLICY, CookieSpecs.BROWSER_COMPATIBILITY)
                 );
         assertThat(httpClientConfig.isConfiguredToReuseTheSameHttpClientInstance()).isTrue();
     }
@@ -72,7 +73,7 @@ public class HttpClientConfigTest {
         final Map<String, String> cookieParam = new HashMap<String, String>();
 
         redirectParam.put(ClientPNames.MAX_REDIRECTS, CUSTOM_MAX_REDIRECTS);
-        cookieParam.put(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY);
+        cookieParam.put(ClientPNames.COOKIE_POLICY, CookieSpecs.BROWSER_COMPATIBILITY);
 
         final HttpClientConfig httpClientConfig = new HttpClientConfig()
                 .addParams(redirectParam)
@@ -83,7 +84,7 @@ public class HttpClientConfigTest {
         assertThat(params)
                 .contains(
                         entry(ClientPNames.MAX_REDIRECTS, CUSTOM_MAX_REDIRECTS),
-                        entry(ClientPNames.COOKIE_POLICY, CookiePolicy.BROWSER_COMPATIBILITY)
+                        entry(ClientPNames.COOKIE_POLICY, CookieSpecs.BROWSER_COMPATIBILITY)
                 );
         assertThat(httpClientConfig.isConfiguredToReuseTheSameHttpClientInstance()).isTrue();
     }

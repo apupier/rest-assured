@@ -33,7 +33,7 @@ import java.util.List;
 
 import static io.restassured.internal.common.assertion.AssertParameter.notNull;
 import static org.apache.commons.lang3.StringUtils.trim;
-import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.apache.hc.core5.http.HttpHeaders.CONTENT_TYPE;
 
 /**
  * A builder to make it easier to create new {@link Response} implementations. This is useful if you're working with {@link Filter}s and want to

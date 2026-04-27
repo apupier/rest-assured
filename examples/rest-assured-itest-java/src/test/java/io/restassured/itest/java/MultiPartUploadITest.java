@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.config;
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.MultiPartConfig.multiPartConfig;
-import static org.apache.http.entity.mime.HttpMultipartMode.BROWSER_COMPATIBLE;
+import static org.apache.hc.client5.http.entity.mime.HttpMultipartMode.LEGACY;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -515,7 +515,7 @@ public class MultiPartUploadITest extends WithJetty {
         // When
         given().
                 contentType("multipart/xml; charset=UTF-8").
-                config(RestAssuredConfig.config().httpClient(HttpClientConfig.httpClientConfig().httpMultipartMode(BROWSER_COMPATIBLE))).
+                config(RestAssuredConfig.config().httpClient(HttpClientConfig.httpClientConfig().httpMultipartMode(LEGACY))).
                 multiPart(new MultiPartSpecBuilder(bytes).controlName("Cédrìc").build()).
         when().
                 post("/multipart/file-utf8").
@@ -531,7 +531,7 @@ public class MultiPartUploadITest extends WithJetty {
 
         // When
         given().
-                config(RestAssuredConfig.config().httpClient(HttpClientConfig.httpClientConfig().httpMultipartMode(BROWSER_COMPATIBLE)).multiPartConfig(multiPartConfig().defaultCharset("UTF-8"))).
+                config(RestAssuredConfig.config().httpClient(HttpClientConfig.httpClientConfig().httpMultipartMode(LEGACY)).multiPartConfig(multiPartConfig().defaultCharset("UTF-8"))).
                 multiPart(new MultiPartSpecBuilder(bytes).controlName("Cédrìc").build()).
         when().
                 post("/multipart/file-utf8").

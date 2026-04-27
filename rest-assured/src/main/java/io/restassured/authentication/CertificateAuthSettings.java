@@ -17,13 +17,13 @@
 package io.restassured.authentication;
 
 import io.restassured.internal.common.assertion.AssertParameter;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.hc.core5.ssl.SSLSocketFactory;
+import org.apache.hc.core5.ssl.X509HostnameVerifier;
 
 import java.security.KeyStore;
 
-import static org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-import static org.apache.http.conn.ssl.SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
+import static org.apache.hc.core5.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+import static org.apache.hc.core5.ssl.SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
 
 /**
  * A specification for more advanced usages of certificate authentication. Example usage:
@@ -49,7 +49,7 @@ public class CertificateAuthSettings {
      * <li>port = 443</li>
      * <li>trustStore = null</li>
      * <li>keyStore = null</li>
-     * <li>x509HostnameVerifier = {@link org.apache.http.conn.ssl.SSLSocketFactory#STRICT_HOSTNAME_VERIFIER}</li>
+     * <li>x509HostnameVerifier = {@link org.apache.hc.core5.ssl.SSLSocketFactory#STRICT_HOSTNAME_VERIFIER}</li>
      * <li>SSLSocketFactory = null</li>
      * </ul>
      *
@@ -108,7 +108,7 @@ public class CertificateAuthSettings {
      * Configure the CertificateAuthSettings to use strict host name verification (this is the default behavior).
      *
      * @return A new CertificateAuthSettings instance
-     * @see org.apache.http.conn.ssl.SSLSocketFactory#STRICT_HOSTNAME_VERIFIER
+     * @see org.apache.hc.core5.ssl.SSLSocketFactory#STRICT_HOSTNAME_VERIFIER
      */
     public CertificateAuthSettings strictHostnames() {
         return new CertificateAuthSettings(keystoreType, trustStoreType, port, trustStore, keyStore, STRICT_HOSTNAME_VERIFIER, sslSocketFactory);
@@ -118,7 +118,7 @@ public class CertificateAuthSettings {
      * Configure the CertificateAuthSettings to allow all host names.
      *
      * @return A new CertificateAuthSettings instance
-     * @see org.apache.http.conn.ssl.SSLSocketFactory#ALLOW_ALL_HOSTNAME_VERIFIER
+     * @see org.apache.hc.core5.ssl.SSLSocketFactory#ALLOW_ALL_HOSTNAME_VERIFIER
      */
     public CertificateAuthSettings allowAllHostnames() {
         return new CertificateAuthSettings(keystoreType, trustStoreType, port, trustStore, keyStore, ALLOW_ALL_HOSTNAME_VERIFIER, sslSocketFactory);
@@ -128,7 +128,7 @@ public class CertificateAuthSettings {
      * Configure the CertificateAuthSettings to use the provided {@link X509HostnameVerifier} instance.
      *
      * @return A new CertificateAuthSettings instance
-     * @see org.apache.http.conn.ssl.SSLSocketFactory#ALLOW_ALL_HOSTNAME_VERIFIER
+     * @see org.apache.hc.core5.ssl.SSLSocketFactory#ALLOW_ALL_HOSTNAME_VERIFIER
      * @see #allowAllHostnames()
      */
     public CertificateAuthSettings x509HostnameVerifier(X509HostnameVerifier x509HostnameVerifier) {

@@ -17,9 +17,9 @@
 package io.restassured.internal.http;
 
 import io.restassured.internal.NoParameterValue;
-import org.apache.http.NameValuePair;
-import org.apache.http.util.CharArrayBuffer;
-import org.apache.http.util.LangUtils;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.util.CharArrayBuffer;
+import org.apache.hc.core5.util.LangUtils;
 
 import java.io.Serializable;
 

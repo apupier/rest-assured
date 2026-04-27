@@ -24,7 +24,7 @@ package io.restassured.internal.http;
  * @author <a href='mailto:tomstrummer+httpbuilder@gmail.com'>Tom Nichols</a>
  * @since 0.5
  */
-public class HttpResponseException extends org.apache.http.client.HttpResponseException {
+public class HttpResponseException extends org.apache.hc.client5.http.HttpResponseException {
 	
 	private static final long serialVersionUID = -34809347677236L;
 

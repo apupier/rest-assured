@@ -18,14 +18,14 @@ package io.restassured.internal
 import io.restassured.internal.http.HTTPBuilder
 import org.apache.commons.lang3.Validate
 import org.apache.http.conn.scheme.Scheme
-import org.apache.http.conn.ssl.SSLContexts
-import org.apache.http.conn.ssl.SSLSocketFactory
-import org.apache.http.conn.ssl.X509HostnameVerifier
+import org.apache.hc.core5.ssl.SSLContexts
+import org.apache.hc.core5.ssl.SSLSocketFactory
+import org.apache.hc.core5.ssl.X509HostnameVerifier
 
 import java.security.KeyStore
 
-import static org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER
-import static org.apache.http.conn.ssl.SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER
+import static org.apache.hc.core5.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER
+import static org.apache.hc.core5.ssl.SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER
 
 class TrustAndKeystoreSpecImpl implements TrustAndKeystoreSpec {
 

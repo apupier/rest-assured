@@ -19,8 +19,8 @@ package io.restassured.config;
 import io.restassured.internal.common.assertion.AssertParameter;
 import io.restassured.internal.util.SafeExceptionRethrower;
 import org.apache.commons.lang3.Validate;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.hc.core5.ssl.SSLSocketFactory;
+import org.apache.hc.core5.ssl.X509HostnameVerifier;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -41,8 +41,8 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import static org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-import static org.apache.http.conn.ssl.SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
+import static org.apache.hc.core5.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+import static org.apache.hc.core5.ssl.SSLSocketFactory.STRICT_HOSTNAME_VERIFIER;
 
 /**
  * Configure SSL for REST Assured.
@@ -186,7 +186,7 @@ public class SSLConfig implements Config {
      * <li>No explicit default port</li>
      * <li>No trust store</li>
      * <li>No SSLSocketFactory</li>
-     * <li>{@link org.apache.http.conn.ssl.SSLSocketFactory#STRICT_HOSTNAME_VERIFIER} as {@link X509HostnameVerifier} implementation</li>
+     * <li>{@link org.apache.hc.core5.ssl.SSLSocketFactory#STRICT_HOSTNAME_VERIFIER} as {@link X509HostnameVerifier} implementation</li>
      * </ul>
      */
     public SSLConfig() {
@@ -316,9 +316,9 @@ public class SSLConfig implements Config {
     }
 
     /**
-     * Specify a {@link org.apache.http.conn.ssl.SSLSocketFactory}. This will override settings from trust store as well as keystore and password.
+     * Specify a {@link org.apache.hc.core5.ssl.SSLSocketFactory}. This will override settings from trust store as well as keystore and password.
      *
-     * @param sslSocketFactory The {@link org.apache.http.conn.ssl.SSLSocketFactory} to use.
+     * @param sslSocketFactory The {@link org.apache.hc.core5.ssl.SSLSocketFactory} to use.
      * @return A new SSLConfig instance
      */
     public SSLConfig sslSocketFactory(SSLSocketFactory sslSocketFactory) {
@@ -327,7 +327,7 @@ public class SSLConfig implements Config {
     }
 
     /**
-     * Provide a custom {@link X509HostnameVerifier} implementation that'll be used by the {@link org.apache.http.conn.ssl.SSLSocketFactory}. You can replace the
+     * Provide a custom {@link X509HostnameVerifier} implementation that'll be used by the {@link org.apache.hc.core5.ssl.SSLSocketFactory}. You can replace the
      * {@link X509HostnameVerifier} for example if you want to allow all host names etc.
      *
      * @param x509HostnameVerifier The X509HostnameVerifier to use.
@@ -343,7 +343,7 @@ public class SSLConfig implements Config {
      * Configure the SSLConfig to use strict host name verification (this is the default behavior).
      *
      * @return A new SSLConfig instance
-     * @see org.apache.http.conn.ssl.SSLSocketFactory#STRICT_HOSTNAME_VERIFIER
+     * @see org.apache.hc.core5.ssl.SSLSocketFactory#STRICT_HOSTNAME_VERIFIER
      */
     public SSLConfig strictHostnames() {
         return new SSLConfig(pathToKeyStore, pathToTrustStore, keyStorePassword, trustStorePassword, keyStoreType, trustStoreType, port, keyStore, trustStore, STRICT_HOSTNAME_VERIFIER, sslSocketFactory, true);
@@ -353,7 +353,7 @@ public class SSLConfig implements Config {
      * Configure the SSLConfig to allow all host names.
      *
      * @return A new SSLConfig instance
-     * @see org.apache.http.conn.ssl.SSLSocketFactory#ALLOW_ALL_HOSTNAME_VERIFIER
+     * @see org.apache.hc.core5.ssl.SSLSocketFactory#ALLOW_ALL_HOSTNAME_VERIFIER
      */
     public SSLConfig allowAllHostnames() {
         return new SSLConfig(pathToKeyStore, pathToTrustStore, keyStorePassword, trustStorePassword, keyStoreType, trustStoreType, port, keyStore, trustStore, ALLOW_ALL_HOSTNAME_VERIFIER, sslSocketFactory, true);

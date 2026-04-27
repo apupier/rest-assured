@@ -25,15 +25,14 @@ import io.restassured.internal.http.*;
 import io.restassured.internal.util.SafeExceptionRethrower;
 import io.restassured.parsing.Parser;
 import io.restassured.specification.FilterableResponseSpecification;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.HttpEntityWrapper;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.entity.HttpEntityWrapper;
+import org.apache.hc.client5.http.impl.classic.AbstractHttpClient;
+import org.apache.hc.core5.http.message.BasicHeader;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -101,7 +100,7 @@ class RestAssuredHttpBuilder extends HTTPBuilder {
                 return SafeExceptionRethrower.safeRethrow(e);
             }
         }
-        final HttpRequestBase reqMethod = delegate.getRequest();
+        final HttpUriRequestBase reqMethod = delegate.getRequest();
         Object acceptContentType = delegate.getContentType();
         if (!requestHeaders.hasHeaderWithName("Accept")) {
             String acceptContentTypes = acceptContentType.toString();
@@ -114,7 +113,7 @@ class RestAssuredHttpBuilder extends HTTPBuilder {
             String contentTypeToUse = trim(delegate.getRequestContentType());
             reqMethod.setHeader(CONTENT_TYPE, contentTypeToUse);
         }
-        if (reqMethod.getURI() == null)
+        if (reqMethod.getUri() == null)
             throw new IllegalStateException("Request URI cannot be null");
         Map<?, ?> headers1 = delegate.getHeaders();
         for (Object key : headers1.keySet()) {
@@ -180,17 +179,17 @@ class RestAssuredHttpBuilder extends HTTPBuilder {
         }
     }
 
-    private boolean doesntHaveEntity(HttpRequestBase reqMethod) {
+    private boolean doesntHaveEntity(HttpUriRequestBase reqMethod) {
         // Port of (!reqMethod.hasProperty("entity") || reqMethod.entity ?.contentType == null)
-        if (!(reqMethod instanceof HttpEntityEnclosingRequestBase)) {
+        if (!(reqMethod instanceof HttpUriRequestBase)) {
             return true;
         }
 
-        HttpEntity entity = ((HttpEntityEnclosingRequestBase) reqMethod).getEntity();
+        HttpEntity entity = ((HttpUriRequestBase) reqMethod).getEntity();
         return entity == null || entity.getContentType() == null;
     }
 
-    private boolean shouldApplyContentTypeFromRestAssuredConfigDelegate(HTTPBuilder.RequestConfigDelegate delegate, HttpRequestBase reqMethod) {
+    private boolean shouldApplyContentTypeFromRestAssuredConfigDelegate(HTTPBuilder.RequestConfigDelegate delegate, HttpUriRequestBase reqMethod) {
         String requestContentType = delegate.getRequestContentType();
         return allowContentType && requestContentType != null && !requestContentType.equals(ANY.toString()) &&
                 doesntHaveEntity(reqMethod) &&
@@ -207,7 +206,7 @@ class RestAssuredHttpBuilder extends HTTPBuilder {
      * content-type of the defaultParser if registered to Rest Assured to the response if no
      * content-type is defined.
      */
-    protected Object parseResponse(HttpResponse resp, Object contentType) throws IOException {
+    protected Object parseResponse(ClassicHttpResponse resp, Object contentType) throws IOException {
         if (parser != null && ANY.toString().equals(contentType.toString())) {
             try {
                 HttpResponseContentTypeFinder.findContentType(resp);
@@ -217,7 +216,7 @@ class RestAssuredHttpBuilder extends HTTPBuilder {
                 if (entity != null) {
                     resp.setEntity(new HttpEntityWrapper(entity) {
 
-                        public org.apache.http.Header getContentType() {
+                        public org.apache.hc.core5.http.Header getContentType() {
                             // We don't use CONTENT_TYPE field because of issue 253 (no tests for this!)
                             return new BasicHeader("Content-Type", parser.getContentType());
                         }

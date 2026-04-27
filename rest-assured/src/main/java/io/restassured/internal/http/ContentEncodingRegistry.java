@@ -18,8 +18,8 @@ package io.restassured.internal.http;
 
 import io.restassured.config.DecoderConfig;
 import io.restassured.internal.http.ContentEncoding.Type;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.AbstractHttpClient;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.AbstractHttpClient;
 
 import java.util.HashMap;
 import java.util.Map;

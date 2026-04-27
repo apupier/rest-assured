@@ -25,17 +25,18 @@ import com.github.scribejava.core.oauth.OAuthService;
 import io.restassured.authentication.OAuthSignature;
 import io.restassured.internal.TrustAndKeystoreSpecImpl;
 import org.apache.commons.lang3.EnumUtils;
-import org.apache.http.*;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.NTCredentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
-import org.apache.http.impl.client.RequestWrapper;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.protocol.HttpCoreContext;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.core5.net.URLEncodedUtils;
+import org.apache.hc.core5.http.*;
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.NTCredentials;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.core5.ssl.SSLSocketFactory;
+import org.apache.hc.core5.ssl.X509HostnameVerifier;
+import org.apache.hc.client5.http.impl.classic.RequestWrapper;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.http.protocol.HttpCoreContext;
 
 import java.io.IOException;
 import java.net.URI;
@@ -87,7 +88,7 @@ public class AuthConfig {
     public void basic(String host, int port, String user, String pass) {
         builder.getClient().getCredentialsProvider().setCredentials(
                 new AuthScope(host, port),
-                new UsernamePasswordCredentials(user, pass)
+                new UsernamePasswordCredentials(user, pass.toCharArray())
         );
     }
 
@@ -252,7 +253,7 @@ public class AuthConfig {
             isOAuth1 = false;
         }
 
-        public void process(HttpRequest request, HttpContext ctx) throws HttpException, IOException {
+        public void process(ClassicHttpRequest request, HttpContext ctx) throws HttpException, IOException {
             try {
                 Verb verb = EnumUtils.getEnum(Verb.class, request.getRequestLine().getMethod().toUpperCase());
                 if (verb == null)
@@ -264,8 +265,8 @@ public class AuthConfig {
                 OAuthRequest oauthRequest = new OAuthRequest(verb, requestURI.toString(), null);
                 this.service = (OAuth10aService) getOauthService(isOAuth1, addEmptyTokenToBaseString);
 
-                if (request instanceof HttpEntityEnclosingRequest) {
-                    HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
+                if (request instanceof HttpEntityContainer) {
+                    HttpEntity entity = ((HttpEntityContainer) request).getEntity();
                     if (entity != null) {
                         List<NameValuePair> params = URLEncodedUtils.parse(entity);
                         for (NameValuePair param : params) {
@@ -287,8 +288,8 @@ public class AuthConfig {
                     URI uri = new URI(oauthRequest.getCompleteUrl());
                     if (request instanceof RequestWrapper) {
                         ((RequestWrapper) request).setURI(uri);
-                    } else if (request instanceof HttpRequestBase) {
-                        ((HttpRequestBase) request).setURI(uri);
+                    } else if (request instanceof HttpUriRequestBase) {
+                        ((HttpUriRequestBase) request).setURI(uri);
                     }
                 }
 

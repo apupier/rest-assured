@@ -17,10 +17,10 @@ package io.restassured.internal.multipart
 
 import groovy.transform.Canonical
 import io.restassured.internal.NoParameterValue
-import org.apache.http.entity.ContentType
-import org.apache.http.entity.mime.content.FileBody
-import org.apache.http.entity.mime.content.InputStreamBody
-import org.apache.http.entity.mime.content.StringBody
+import org.apache.hc.core5.http.ContentType
+import org.apache.hc.core5.http.io.entity.mime.content.FileBody
+import org.apache.hc.core5.http.io.entity.mime.content.InputStreamBody
+import org.apache.hc.core5.http.io.entity.mime.content.StringBody
 
 @Canonical
 class MultiPartInternal {

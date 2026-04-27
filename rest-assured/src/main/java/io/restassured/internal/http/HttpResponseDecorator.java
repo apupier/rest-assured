@@ -16,35 +16,41 @@
 
 package io.restassured.internal.http;
 
-import org.apache.http.*;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.message.StatusLine;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HeaderIterator;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.ProtocolVersion;
+/* No generic migration for classes in the `org.apache.http.params` package exists, please migrate manually */
 import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.core5.http.protocol.ExecutionContext;
+import org.apache.hc.core5.http.protocol.HttpContext;
 
 import java.util.Iterator;
 import java.util.Locale;
 
 /**
- * This class is a wrapper for {@link HttpResponse}, which allows for 
+ * This class is a wrapper for {@link ClassicHttpResponse}, which allows for 
  * simplified header access, as well as carrying the auto-parsed response data.
- * (see {@link HTTPBuilder#parseResponse(HttpResponse, Object)}).
+ * (see {@link HTTPBuilder#parseResponse(ClassicHttpResponse, Object)}).
  * 
  * @see HeadersDecorator
  * @author <a href='mailto:tomstrummer+httpbuilder@gmail.com'>Tom Nichols</a>
  * @since 0.5.0
  */
-public class HttpResponseDecorator implements HttpResponse {
+public class HttpResponseDecorator implements ClassicHttpResponse {
 	
 	HeadersDecorator headers = null;
-	HttpResponse responseBase;
+	ClassicHttpResponse responseBase;
 	HttpContextDecorator context;
 	Object responseData;
 	
-	public HttpResponseDecorator( HttpResponse base, Object parsedResponse ) {
+	public HttpResponseDecorator( ClassicHttpResponse base, Object parsedResponse ) {
 		this( base, null, parsedResponse );
 	}
 	
-	public HttpResponseDecorator( HttpResponse base, HttpContextDecorator context, Object parsedResponse ) {
+	public HttpResponseDecorator( ClassicHttpResponse base, HttpContextDecorator context, Object parsedResponse ) {
 		this.responseBase = base;
 		this.context = context;
 		this.responseData = parsedResponse;
@@ -75,12 +81,12 @@ public class HttpResponseDecorator implements HttpResponse {
 	 * @return the HTTP response code.
 	 */
 	public int getStatus() {
-		return responseBase.getStatusLine().getStatusCode();
+		return responseBase.getCode();
 	}
 	
 	/**
 	 * Get the content-type for this response.
-	 * @see HttpResponseContentTypeFinder#findContentType(HttpResponse)
+	 * @see HttpResponseContentTypeFinder#findContentType(ClassicHttpResponse)
 	 * @return the content-type string, without any charset information.
 	 */
 	public String getContentType() {
@@ -124,7 +130,7 @@ public class HttpResponseDecorator implements HttpResponse {
 		/**
 		 * Access the named header value, using bracket form.  For example,
 		 * <code>response.headers['Content-Encoding']</code>
-		 * @see HttpResponse#getFirstHeader(String)
+		 * @see ClassicHttpResponse#getFirstHeader(String)
 		 * @param name header name, e.g. <code>Content-Type<code>
 		 * @return the {@link Header}, or <code>null</code> if it does not exist
 		 *  in this response 
@@ -170,7 +176,7 @@ public class HttpResponseDecorator implements HttpResponse {
 	}
 
 	public StatusLine getStatusLine() {
-		return responseBase.getStatusLine();
+		return new StatusLine(responseBase);
 	}
 
 	public void setEntity( HttpEntity arg0 ) {

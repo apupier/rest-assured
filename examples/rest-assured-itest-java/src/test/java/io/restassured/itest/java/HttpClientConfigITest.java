@@ -28,17 +28,17 @@ import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.apache.http.Header;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.SystemDefaultHttpClient;
-import org.apache.http.message.BasicHeader;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.client5.http.impl.classic.SystemDefaultHttpClient;
+import org.apache.hc.core5.http.message.BasicHeader;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static org.apache.http.client.params.ClientPNames.*;
+import static org.apache.hc.client5.http.params.ClientPNames.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 

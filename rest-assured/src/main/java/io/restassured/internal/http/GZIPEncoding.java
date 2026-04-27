@@ -17,8 +17,8 @@
 package io.restassured.internal.http;
 
 import io.restassured.internal.util.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.HttpEntityWrapper;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.HttpEntityWrapper;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -39,8 +39,8 @@ import io.restassured.specification.FilterableResponseSpecification;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.DefaultHttpClient;
 import org.junit.jupiter.api.Test;
 import org.assertj.core.api.Assertions;
 

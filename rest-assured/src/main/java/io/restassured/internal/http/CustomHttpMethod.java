@@ -18,11 +18,11 @@ package io.restassured.internal.http;
 
 import io.restassured.internal.common.assertion.AssertParameter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 
 import java.net.URI;
 
-public class CustomHttpMethod extends HttpEntityEnclosingRequestBase {
+public class CustomHttpMethod extends HttpUriRequestBase {
     private final String methodName;
 
     public CustomHttpMethod(String methodName, final String uri) {

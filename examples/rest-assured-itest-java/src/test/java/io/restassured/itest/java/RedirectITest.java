@@ -21,12 +21,12 @@ import io.restassured.config.HttpClientConfig;
 import io.restassured.config.RedirectConfig;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.itest.java.support.WithJetty;
-import org.apache.http.client.ClientProtocolException;
+import org.apache.hc.client5.http.ClientProtocolException;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.apache.http.client.params.ClientPNames.COOKIE_POLICY;
-import static org.apache.http.client.params.CookiePolicy.BROWSER_COMPATIBILITY;
+import static org.apache.hc.client5.http.params.ClientPNames.COOKIE_POLICY;
+import static org.apache.hc.client5.http.config.CookieSpecs.BROWSER_COMPATIBILITY;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

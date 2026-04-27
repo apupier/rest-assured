@@ -15,10 +15,9 @@
  */
 
 package io.restassured.internal.http;
-
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
-import org.apache.http.client.methods.*;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.HttpEntityContainer;
+import org.apache.hc.client5.http.classic.methods.*;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -36,8 +35,8 @@ import static org.apache.commons.lang3.StringUtils.upperCase;
  * @author Johan Haleby
  */
 public class HttpRequestFactory {
-    private static final Map<String, Class<? extends HttpRequestBase>> HTTP_METHOD_TO_HTTP_REQUEST_TYPE =
-            new HashMap<String, Class<? extends HttpRequestBase>>() {{
+    private static final Map<String, Class<? extends HttpUriRequestBase>> HTTP_METHOD_TO_HTTP_REQUEST_TYPE =
+            new HashMap<String, Class<? extends HttpUriRequestBase>>() {{
                 put(GET.name(), HttpGet.class);
                 put(PUT.name(), HttpPut.class);
                 put(POST.name(), HttpPost.class);
@@ -51,17 +50,17 @@ public class HttpRequestFactory {
     /**
      * Get the HttpRequest class that represents this request type.
      *
-     * @return a non-abstract class that implements {@link HttpRequest}
+     * @return a non-abstract class that implements {@link ClassicHttpRequest}
      */
-    static HttpRequestBase createHttpRequest(URI uri, String httpMethod, boolean hasBody) {
+    static HttpUriRequestBase createHttpRequest(URI uri, String httpMethod, boolean hasBody) {
         String method = notNull(upperCase(trimToNull(httpMethod)), "Http method");
-        Class<? extends HttpRequestBase> type = HTTP_METHOD_TO_HTTP_REQUEST_TYPE.get(method);
-        final HttpRequestBase httpRequest;
+        Class<? extends HttpUriRequestBase> type = HTTP_METHOD_TO_HTTP_REQUEST_TYPE.get(method);
+        final HttpUriRequestBase httpRequest;
         // If we are sending HTTP method that does not allow body (like GET) then HTTP library prevents
         // us from including it, however we chose to allow deviations from standard if user wants so,
         // so it needs custom handling - hence the second condition below.
         // Otherwise we should use standard implementation found in the map
-        if (type == null || (!(type.isInstance(HttpEntityEnclosingRequest.class)) && hasBody)) {
+        if (type == null || (!(type.isInstance(HttpEntityContainer.class)) && hasBody)) {
             httpRequest = new CustomHttpMethod(method, uri);
         } else {
             try {

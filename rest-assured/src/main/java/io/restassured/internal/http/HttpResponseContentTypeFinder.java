@@ -17,9 +17,9 @@
 package io.restassured.internal.http;
 
 import io.restassured.http.ContentType;
-import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpHeaders;
 
 /**
  * @see ContentType
@@ -31,7 +31,7 @@ public class HttpResponseContentTypeFinder {
      * (no charset).
      * @param resp
      */
-    public static String findContentType(HttpResponse resp) {
+    public static String findContentType(ClassicHttpResponse resp) {
         Header contentTypeHeader = resp.getFirstHeader(HttpHeaders.CONTENT_TYPE);
 
         if ( contentTypeHeader == null )

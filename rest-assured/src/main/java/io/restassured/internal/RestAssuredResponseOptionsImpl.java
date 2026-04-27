@@ -32,7 +32,7 @@ import io.restassured.path.xml.config.XmlPathConfig;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.ResponseBody;
 import io.restassured.response.ResponseOptions;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.core5.http.protocol.HttpContext;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;

@@ -21,7 +21,7 @@ import io.restassured.config.RestAssuredConfig;
 import io.restassured.filter.Filter;
 import io.restassured.http.Cookies;
 import io.restassured.http.Headers;
-import org.apache.http.client.HttpClient;
+import org.apache.hc.client5.http.classic.HttpClient;
 
 import java.util.List;
 import java.util.Map;
@@ -171,7 +171,7 @@ public interface QueryableRequestSpecification {
     RestAssuredConfig getConfig();
 
     /**
-     * @return The underlying http client. Only use this for advanced configuration which is not accessible from Rest Assured! By default an instance of {@link org.apache.http.impl.client.AbstractHttpClient} is used by REST Assured.
+     * @return The underlying http client. Only use this for advanced configuration which is not accessible from Rest Assured! By default an instance of {@link org.apache.hc.client5.http.impl.classic.AbstractHttpClient} is used by REST Assured.
      */
     HttpClient getHttpClient();
 

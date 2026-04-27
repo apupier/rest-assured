@@ -18,7 +18,7 @@ package io.restassured.itest.java;
 
 import io.restassured.RestAssured;
 import io.restassured.itest.java.support.WithJetty;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.junit.jupiter.api.AfterEach;
 
 import org.junit.jupiter.api.BeforeEach;

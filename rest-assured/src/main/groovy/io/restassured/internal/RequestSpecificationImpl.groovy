@@ -49,13 +49,14 @@ import io.restassured.mapper.ObjectMapperType
 import io.restassured.response.Response
 import io.restassured.specification.*
 import io.restassured.spi.AuthFilter
-import org.apache.http.auth.AuthScope
-import org.apache.http.auth.UsernamePasswordCredentials
-import org.apache.http.client.CredentialsProvider
-import org.apache.http.client.HttpClient
-import org.apache.http.entity.mime.FormBodyPartBuilder
-import org.apache.http.impl.client.AbstractHttpClient
-import org.apache.http.impl.client.BasicCredentialsProvider
+import org.apache.hc.client5.http.entity.mime.HttpMultipartMode
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider
+import org.apache.hc.client5.http.auth.AuthScope
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials
+import org.apache.hc.client5.http.classic.HttpClient
+import org.apache.hc.core5.net.URIBuilder
+import org.apache.hc.client5.http.entity.mime.FormBodyPartBuilder
+import org.apache.hc.client5.http.impl.classic.AbstractHttpClient
 
 import java.nio.charset.StandardCharsets
 import java.security.KeyStore
@@ -73,7 +74,7 @@ import static io.restassured.internal.support.PathSupport.mergeAndRemoveDoubleSl
 import static java.lang.String.format
 import static java.util.Arrays.asList
 import static org.apache.commons.lang3.StringUtils.*
-import static org.apache.http.client.params.ClientPNames.*
+import static org.apache.hc.client5.http.params.ClientPNames.*
 
 class RequestSpecificationImpl implements FilterableRequestSpecification, GroovyInterceptable {
   private static final int DEFAULT_HTTP_TEST_PORT = 8080
@@ -816,7 +817,7 @@ class RequestSpecificationImpl implements FilterableRequestSpecification, Groovy
   }
 
   RequestSpecification proxy(String host, int port, String scheme) {
-    proxy(new org.apache.http.client.utils.URIBuilder().setHost(host).setPort(port).setScheme(scheme).build())
+    proxy(new URIBuilder().setHost(host).setPort(port).setScheme(scheme).build())
   }
 
   RequestSpecification proxy(URI uri) {
@@ -2137,7 +2138,7 @@ class RequestSpecificationImpl implements FilterableRequestSpecification, Groovy
       def address = new InetSocketAddress(proxySpecification.host, proxySpecification.port)
       // We need to convert the host to an IP since that's what our proxy selector (RestAssuredProxySelector) expects
       def authScope = new AuthScope(address.getAddress().getHostAddress(), proxySpecification.getPort())
-      def credentials = new UsernamePasswordCredentials(proxySpecification.username, proxySpecification.password)
+      def credentials = new UsernamePasswordCredentials(proxySpecification.username, proxySpecification.password.toCharArray())
       credsProvider.setCredentials(authScope, credentials)
       http.client.setCredentialsProvider(credsProvider)
     }

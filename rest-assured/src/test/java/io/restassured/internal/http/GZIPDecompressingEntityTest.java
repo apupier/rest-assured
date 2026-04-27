@@ -17,7 +17,7 @@ package io.restassured.internal.http;
 
 import io.restassured.internal.http.GZIPEncoding.GZIPDecompressingEntity;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;

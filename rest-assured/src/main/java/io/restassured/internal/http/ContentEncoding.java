@@ -16,8 +16,10 @@
 
 package io.restassured.internal.http;
 
-import org.apache.http.*;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.core5.http.*;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.protocol.HttpContext;
 
 import java.util.Locale;
 import java.io.IOException;
@@ -62,7 +64,7 @@ public abstract class ContentEncoding {
 	 * @author <a href='mailto:tomstrummer+httpbuilder@gmail.com'>Tom Nichols</a>
 	 */
 	protected class RequestInterceptor implements HttpRequestInterceptor {
-		public void process( final HttpRequest req,
+		public void process( final ClassicHttpRequest req,
 				final HttpContext context ) throws HttpException, IOException {
 			
 			// set the Accept-Encoding header:
@@ -92,14 +94,14 @@ public abstract class ContentEncoding {
 	 * @author <a href='mailto:tomstrummer+httpbuilder@gmail.com'>Tom Nichols</a>
 	 */
 	protected class ResponseInterceptor implements HttpResponseInterceptor {
-		public void process( final HttpResponse response, final HttpContext context ) 
+		public void process( final ClassicHttpResponse response, final HttpContext context ) 
 				throws HttpException, IOException {
 
 			if ( hasEncoding( response, getContentEncoding() ) )
 				response.setEntity( wrapResponseEntity( response.getEntity() ) );
 		}
 		
-		protected boolean hasEncoding( final HttpResponse response, final String encoding ) {
+		protected boolean hasEncoding( final ClassicHttpResponse response, final String encoding ) {
 			HttpEntity entity = response.getEntity();
 			if ( entity == null ) return false;
 			Header ceHeader = entity.getContentEncoding();

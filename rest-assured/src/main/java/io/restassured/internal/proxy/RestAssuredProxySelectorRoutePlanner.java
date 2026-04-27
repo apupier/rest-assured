@@ -17,12 +17,12 @@
 package io.restassured.internal.proxy;
 
 import io.restassured.specification.ProxySpecification;
-import org.apache.http.HttpException;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.conn.scheme.SchemeRegistry;
+import org.apache.hc.client5.http.impl.io.ProxySelectorRoutePlanner;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.protocol.HttpContext;
 
 import java.net.ProxySelector;
 
@@ -45,10 +45,10 @@ public class RestAssuredProxySelectorRoutePlanner extends ProxySelectorRoutePlan
 
 
     @Override
-    protected HttpHost determineProxy(HttpHost target, HttpRequest request, HttpContext context) throws HttpException {
+    protected HttpHost determineProxy(HttpHost target, ClassicHttpRequest request, HttpContext context) throws HttpException {
         HttpHost httpHost = super.determineProxy(target, request, context);
         if (scheme != null && !scheme.equalsIgnoreCase(httpHost.getSchemeName())) {
-            httpHost = new HttpHost(httpHost.getHostName(), httpHost.getPort(), scheme);
+            httpHost = new HttpHost(scheme, httpHost.getHostName(), httpHost.getPort());
         }
         return httpHost;
     }
